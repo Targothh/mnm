@@ -117,8 +117,18 @@ func parse_paths(args []string) ([]string, []string) {
 		}
 
 		info, err := os.Stat(abs_path)
-		if err == nil && !info.IsDir() {
-			existing = append(existing, abs_path)
+		if err == nil {
+			if !info.IsDir() {
+				existing = append(existing, abs_path)
+			} else {
+				// if it is a directory, walk through it and grab all files
+				filepath.Walk(abs_path, func(path string, wInfo os.FileInfo, wErr error) error {
+					if wErr == nil && !wInfo.IsDir() {
+						existing = append(existing, path)
+					}
+					return nil
+				})
+			}
 		} else if os.IsNotExist(err) {
 			missing = append(missing, abs_path)
 		}
@@ -201,8 +211,8 @@ func main() {
 
 		for _, orphan := range last_cmd.CreatedFiles {
 			if _, err := os.Stat(orphan); err == nil {
-				os.Remove(orphan)
-				fmt.Printf("File removed (orphan): %s\n", orphan)
+				os.RemoveAll(orphan)
+				fmt.Printf("Removed (orphan): %s\n", orphan)
 			}
 		}
 
