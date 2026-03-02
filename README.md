@@ -17,7 +17,7 @@ Tired of accidentally deleting the wrong file with `rm` or overwriting a config 
 Ensure you have [Go](https://go.dev/) installed, then run:
 
 ```bash
-go install [github.com/](https://github.com/)Targothh/mnm@latest
+go install github.com/Targothh/mnm@latest
 ```
 
 ## Usage
